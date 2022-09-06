@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Top-down player-controller</title>
+        <script src="./Coordinates.js"></script>
+        <script src="./levels.js"></script>
+        <script src="./main.js"></script>
+        <style>
+            body, svg {
+                margin: 0px;
+                height: 100%;
+            }
+            svg {
+                position:absolute;
+                top:0px;
+                bottom:0px;
+                width:100%;
+            }
+            #log {
+                position:absolute;
+                bottom: 0px;
+            }
+            body {
+                background-color: black;
+                color: white;
+            }
+        </style>
+    </head>
+    <body onload="onStart()">
+        <svg id="svg"></svg>
+        <p id="log"></p>
+    </body>
+</html>
