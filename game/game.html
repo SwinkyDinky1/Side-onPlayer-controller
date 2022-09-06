@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Side-on player-controller - In-game</title>
+        <style>
+            body, svg {
+                margin: 0px;
+                height: 100%;
+            }
+            svg, #htmlImgs, #screenColoring {
+                position:absolute;
+                top:0px;
+                bottom:0px;
+                left:0px;
+                width:100%;
+            }
+            /*svg {
+                border: 1px solid darkslategrey;
+            }*/
+            #log {
+                margin: 0px;
+            }
+            img.abil {
+                width:49.5px;
+                height:49.5px;
+                border-radius: 50%;
+            }
+
+            #abilities {
+                position: absolute;
+                bottom: 0px;
+                left:0px;
+            }
+            .button {
+                position:absolute;
+                width: 300px;
+                font-size: 50px;
+                left: calc(50vw - 152.5px);
+            }
+        </style>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body onload="/*javascript:(function(){(function() {var x = document.createElement('script');x.src = 'https://cdn.jsdelivr.net/gh/SnowLord7/devconsole@master/main.js';x.onload = alert('Loaded Developer Console!');document.head.appendChild(x);})()})();*/ onStart()">
+        <p id="log" style="bottom:50px;"></p>
+        <div id="abilities">
+            <img src="./Media/doubleXP.png" alt="Double XP" id="doubleXP" class="abil">
+        </div>
+        <div id="htmlImgs"></div>
+        <svg id="backgroundSVG"></svg>
+        <svg id="svg" onclick="runInput();physics();render()"></svg>
+        <svg id="test"></svg>
+        <div id="mobile" style="display:none;">
+            <button><img src="./Media/uparrow-up.png" alt=""></button>
+            <button><img src="./Media/leftarrow-up.png" alt=""></button>
+            <button><img src="./Media/downarrow-up.png" alt=""></button>
+            <button><img src="./Media/rightarrow-up.png" alt=""></button>
+        </div>
+        <div id="screenColoring" style="background-color:rgba(0,0,0,0)"></div>
+        <div id="pauseMenu" style="display:none;position:absolute;left:0px;top:0px;width:100vw;height:100vh;background-color:rgba(0, 0, 0, 0.5);">
+            <p onclick="paused=false; document.getElementById('pauseMenu').style.display = 'none'" class="button" style="top:calc(50vh - 140px)">Resume</p>
+            <p onclick="onDeath(); window.location.assign('./main.html')" class="button" style="top:calc(50vh - 20px)">Quit</p>
+        </div>
+
+        <script src="./js/Coordinates.js"></script>
+        <script src="./levels.js"></script>
+        <script src="./js/main.js"></script>
+        <script src="./js/collisions.js"></script>
+        <script src="./js/svg.js"></script>
+        <script src="./js/render.js"></script>
+    </body>
+</html>

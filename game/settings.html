@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Side-on player-controller: Upgrades</title>
+        <link rel="stylesheet" href="styles.css">
+        <style>
+            td:nth-child(odd) {
+                text-align: right;
+            }
+
+            td:nth-child(even) {
+                text-align: left;
+            }
+
+            td {
+                width:50vw
+            }
+
+            .button {
+                position: fixed; 
+                font-size: 25px;
+                height: 30px;
+            }
+            .areYouSure {
+                position:fixed;
+            }
+        </style>
+    </head>
+    <body>
+        <p onclick="window.location.assign('./main.html')" class="button" style="left: 20px; top: 0px; width: 100px;">&lt; Back</p>
+        <table style="position:absolute; top:100px; left: 0px; width: 100vw;">
+            <colgroup><col><col></colgroup>
+            <tr>
+                <td><input type="checkbox" id="showCircle" onchange="updateSetting('showCircle', this.checked)"></td>
+                <td>Show distance circle</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" id="showLog" onchange="updateSetting('showLog', this.checked)"></td>
+                <td>Show full log</td>
+            </tr>
+            <p class="button" style="border-color:red;background-color:brown;width:200px;right:20px;bottom:0px;" onclick="document.getElementById('areYouSure').style.display = 'block'">Clear all progress</p>
+            <div id="areYouSure" style="display:none;position:absolute;left:0px;top:0px;width:100vw;height:100vh;background-color:rgba(0, 0, 0, 0.5);z-index:10;">
+                <h1 class="areYouSure" style="top:calc(50vh - 75px);width:100vw;">Are you sure?</h1>
+                <p class="areYouSure" style="top:calc(50vh - 20px);width:100vw;">All your progress will be reset.</p>
+                <p class="button" style="left:calc(50vw - 250px);top:calc(50vh + 20px);width:200px;" onclick="document.getElementById('areYouSure').style.display = 'none'">Cancel</p>
+                <p class="button" style="border-color:red; background-color:brown;left:calc(50vw + 50px);top:calc(50vh + 20px);width:200px;" onclick="localStorage.abilities = localStorage.highScore = localStorage.points = ''; document.getElementById('areYouSure').style.display = 'none'">Do it anyways</p>
+            </div>
+        </table>
+        <p id="log"></p>
+        <script>
+                if(!localStorage.getItem("settings")) {
+                    localStorage.setItem("settings", JSON.stringify({showCircle: false, showLog: false}))
+                }
+
+            try {
+                var settings = JSON.parse(localStorage.getItem("settings"));
+                {
+                    settings.showCircle ? document.getElementById("showCircle").checked = true : "";
+                    settings.showLog ? document.getElementById("showLog").checked = true : ""
+                }
+
+                document.addEventListener("keydown", function(event) {
+                    (event.key == "Escape" ? window.location.assign("./main.html") : null)
+                })
+                
+                function updateSetting(setting, value) {
+                    settings[setting] = value
+                    //document.getElementById("log").innerHTML = setting + ", " + value
+                    localStorage.setItem("settings", JSON.stringify(settings))
+                }
+            } catch (error) {
+                document.getElementById("log").innerHTML = error.stack
+            }
+        </script>
+    </body>
+</html>

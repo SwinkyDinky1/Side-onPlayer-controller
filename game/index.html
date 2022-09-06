@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title id="title">Side-on Player-controller</title>
+        <style> body { background-color: black; } </style>
+        <script>
+            try {
+                setTimeout(function() {
+                document.title = document.getElementById("iframe").contentDocument.title}, 500);
+            } catch (error) {
+                document.getElementById(log).innerHTML = error
+            }
+        </script>
+    </head>
+    <body>
+        <iframe src="./main.html" id="iframe" frameborder="0" style="position:absolute;left:0px;top:0px;width:100vw;height:100vh"></iframe>
+        <p id="log"></p>
+    </body>
+</html>

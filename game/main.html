@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Side-on player-controller</title>
+        <style>
+            h1 {
+                font-size: 75px;
+            }
+            .button {
+                font-size: 50px;
+                position: absolute;
+                width: 250px;
+                height: 65px;
+                left: calc(50vw - 130px);
+            }
+            .title {
+                cursor: default;
+            }
+            #button1 {
+                top: 320px;
+            }
+            #button2 {
+                top: 420px;
+            }
+            #button3 {
+                top: 520px;
+            }
+        </style>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <br><br>
+        <h1 class="title">Side-on<br>Player-controller</h1>
+        <br><br>
+        <p class="button" id="button1" onclick="window.location.assign('./game.html')">Play</p>
+        <p class="button" id="button2" onclick="window.location.assign('./upgrades.html')">Upgrades</p>
+        <p class="button" id="button3" onclick="window.location.assign('./settings.html')">Settings</p>
+    </body>
+</html>

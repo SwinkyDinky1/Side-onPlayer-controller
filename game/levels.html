@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Side-on Player-controller - Levels</title>
+        <script src="./js/Coordinates.js"></script>
+        <script src="levels.js" id="js"></script>
+        <script>
+            function onLoad1() {
+                try {
+                    for(i = 0; i < levels.length; i++) {
+                        document.getElementById("levels").innerHTML += '<br><a href="./game.html?level='+i+'">'+levels[i].name+'</a>'
+                    }
+                } catch (error) {
+                    document.getElementById("log").innerHTML = error
+                }
+            }
+        </script>
+        <link rel="stylesheet" href="./styles.css">
+    </head>
+    <body onload="onLoad1()">
+        <div id="levels">
+            <a href="./game.html">Infinite</a>
+        </div>
+        <p id="log"></p>
+    </body>
+</html>
