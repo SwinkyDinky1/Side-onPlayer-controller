@@ -1,5 +1,5 @@
 # Side-on Player-controller
-[Side-on Player-controller](Game/index.html) is the current name of a game I am working on.
+[Side-on Player-controller](game/index.html) is the current name of a game I am working on.
 
 ## Features
 So far, here are the features:
