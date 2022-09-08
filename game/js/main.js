@@ -200,19 +200,19 @@ function physics() {
                         onDeath()
                         setTimeout(() => {
                             screenPos = 0;
-                            platforms = [
-                                [new Line(0, 0, 100, 0), 0]
-                            ]
-                            for(i = 0; i < platformAmount; i++) {
-                                var x = generateRandomNumber(0, windowWidth - 160)
-                                var y = generateRandomNumber(platforms[platforms.length - 1][0].point1.y + 10, platforms[platforms.length - 1][0].point1.y + 90)
-                                //var z = generateRandomNumber(platforms[platforms.length - 1][0].point1.y + 10, platforms[platforms.length - 1][0].point1.y + 90)
-                                var l = generateRandomNumber(80, 160)
-                                var r = generateRandomNumber(0, 100) < stats[1].specs[1]
-                                var b = generateRandomNumber(0, 100) < 2
-                                platforms.push([new Line(x, y, x + l, y), r, b, (b ? 1 : 0)])
+                            platforms = level ? levels[parseInt(level)].platforms : [[new Line(0, 0, 100, 0), 0]]
+                            if(!presetPlatforms){=
+                                for(i = 0; i < platformAmount; i++) {
+                                    var x = generateRandomNumber(0, windowWidth - 160)
+                                    var y = generateRandomNumber(platforms[platforms.length - 1][0].point1.y + 10, platforms[platforms.length - 1][0].point1.y + 90)
+                                    //var z = generateRandomNumber(platforms[platforms.length - 1][0].point1.y + 10, platforms[platforms.length - 1][0].point1.y + 90)
+                                    var l = generateRandomNumber(80, 160)
+                                    var r = generateRandomNumber(0, 100) < stats[1].specs[1]
+                                    var b = generateRandomNumber(0, 100) < 2
+                                    platforms.push([new Line(x, y, x + l, y), r, b, (b ? 1 : 0)])
+                                }
+                                platforms.shift();
                             }
-                            platforms.shift();
                             currentPos = new Coordinate(0, 80);
                             stopPhysics = false;
                         }, 500)
@@ -306,7 +306,7 @@ function physics() {
 }
 
 function onDeath() { 
-    if(window.localStorage.getItem("highScore") < Math.round(screenPos / 100)) {
+    if(window.localStorage.getItem("highScore") < Math.round(screenPos / 100) && !presetPlatforms) {
         window.localStorage.setItem("highScore", Math.round(screenPos / 100))
     }
     window.localStorage.setItem("points", (Number(window.localStorage.getItem("points")) ? Number(window.localStorage.getItem("points")) + Math.round(screenPos / 100) : Math.round(screenPos / 100)))
