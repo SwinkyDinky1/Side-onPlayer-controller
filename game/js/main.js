@@ -201,7 +201,7 @@ function physics() {
                         setTimeout(() => {
                             screenPos = 0;
                             platforms = level ? levels[parseInt(level)].platforms : [[new Line(0, 0, 100, 0), 0]]
-                            if(!presetPlatforms){=
+                            if(!presetPlatforms){
                                 for(i = 0; i < platformAmount; i++) {
                                     var x = generateRandomNumber(0, windowWidth - 160)
                                     var y = generateRandomNumber(platforms[platforms.length - 1][0].point1.y + 10, platforms[platforms.length - 1][0].point1.y + 90)
