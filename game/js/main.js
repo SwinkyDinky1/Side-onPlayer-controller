@@ -200,7 +200,7 @@ function physics() {
                         onDeath()
                         setTimeout(() => {
                             screenPos = 0;
-                            platforms = level ? levels[parseInt(level)].platforms : [[new Line(0, 0, 100, 0), 0]]
+                            platforms = debug ? levels[0].platforms : [[new Line(0, 0, 100, 0), 0]]
                             if(!presetPlatforms){
                                 for(i = 0; i < platformAmount; i++) {
                                     var x = generateRandomNumber(0, windowWidth - 160)
