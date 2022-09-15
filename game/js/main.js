@@ -35,11 +35,11 @@ var doubleXP = false;
 var paused = false;
 var searchParams = new URLSearchParams(new URL(window.location.href).search)
 var currentLocation = searchParams.get("location")
-var level = searchParams.get("level")
+var debug = searchParams.get("debug")
 try {
-    var presetPlatforms = (level ? true : false);
-    var platforms = level ? levels[parseInt(level)].platforms : []
-    var height = level ? levels[parseInt(level)].height : 0
+    var presetPlatforms = debug;
+    var platforms = debug ? levels[0].platforms : []
+    var height = debug ? levels[0].height : 0
 } catch (error) {
     log(error)
 }
