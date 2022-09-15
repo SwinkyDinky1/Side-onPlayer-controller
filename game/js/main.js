@@ -309,7 +309,9 @@ function onDeath() {
     if(window.localStorage.getItem("highScore") < Math.round(screenPos / 100) && !presetPlatforms) {
         window.localStorage.setItem("highScore", Math.round(screenPos / 100))
     }
-    window.localStorage.setItem("points", (Number(window.localStorage.getItem("points")) ? Number(window.localStorage.getItem("points")) + Math.round(screenPos / 100) : Math.round(screenPos / 100)))
+    if(!presetPlatforms) {
+        window.localStorage.setItem("points", (Number(window.localStorage.getItem("points")) ? Number(window.localStorage.getItem("points")) + Math.round(screenPos / 100) : Math.round(screenPos / 100)))
+    }
     stopPhysics = true;
     doubleXPCooldown = 0; doubleXPTimer = 0; doubleXP = false;
 }
