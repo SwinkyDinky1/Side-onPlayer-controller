@@ -30,16 +30,6 @@ So far, here are the features:
       
       If on, watch out, because the full log fills up the entire left side of the screen. If off, it shows only the current score, the highscore, and the amount of usable points.
       
-* ***Levels***
-  * **Infinite**
-      
-      The main mode, you jump up infinitely randomly generated platforms.
-      
-  * **Debug**
-      
-      Every current type of platform.
-      
-  * **Jump**
-      
-      Pretty much just infinite stairs.
+* ***Debug***
+    Every current type of platform. Does not give points or update high score. Loops.
       
