@@ -34,11 +34,11 @@
                         if (y.document)y = y.document;
                         y.body.style.backgroundColor = "red";
                         document.getElementById("log").innerHTML = "?"
-                        document.getElementById("log").innerHTML = contentWindow.document.notLoading
-                        if(document.getElementById("iframe").contentWindow.document.loading === true) {
+                        document.getElementById("log").innerHTML = y.notLoading
+                        if(y.loading === true) {
                             loading = true;
                             document.getElementById("log").innerHTML = "Loading..."
-                        } else if(document.getElementById("iframe").contentWindow.document.notLoading === true) {
+                        } else if(y.notLoading === true) {
                             loading = false;
                             document.getElementById("log").innerHTML = ""
                         }
