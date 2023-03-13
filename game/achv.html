@@ -5,8 +5,72 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Side-on Player-controller - Achievements</title>
+        <link rel="stylesheet" href="./styles.css">
+        <style>
+            table {
+                position: absolute;
+                top: 60px;
+                left: 5px;
+                width: calc(100vw - 10px);
+            }
+            table, tr, td {
+                border-collapse: collapse;
+            }
+            td {
+                border: 2px solid white;
+                padding: 0px;
+                margin: 0px;
+            }
+            img {
+                width: calc((100vw - 30px)/8);
+                height: auto;
+            }
+        </style>
     </head>
     <body>
-        
+        <p onclick="window.location.assign('./main.html')" class="button" style="left: 20px; top: 0px; width: 100px;">&lt; Back</p>
+        <table>
+            <tr>
+                <td><img src="./Media/Achievements/01.png" id="1">Score&nbsp;20</td>
+                <td><img src="./Media/Achievements/02.png" id="2">Score&nbsp;50</td>
+                <td><img src="./Media/Achievements/03.png" id="3">Score&nbsp;100</td>
+                <td><img src="./Media/Achievements/04.png" id="4">Score&nbsp;150</td>
+                <td><img src="./Media/Achievements/05.png" id="5">Score&nbsp;200</td>
+                <td><img src="./Media/Achievements/06.png" id="6">Score&nbsp;500</td>
+                <td><img src="./Media/Achievements/07.png" id="7">1&nbsp;Rocket used</td>
+                <td><img src="./Media/Achievements/08.png" id="8">5&nbsp;Rockets used</td>
+            </tr>
+            <tr>
+                <td><img src="./Media/Achievements/09.png" id="9">10&nbsp;Rockets used</td>
+                <td><img src="./Media/Achievements/10.png" id="10">20&nbsp;Rockets used</td>
+                <td><img src="./Media/Achievements/11.png" id="11">50&nbsp;Rockets used</td>
+                <td><img src="./Media/Achievements/12.png" id="12">100&nbsp;Rockets used</td>
+                <td><img src="./Media/Achievements/13.png" id="13">1&nbsp;Dissappearing pad used</td>
+                <td><img src="./Media/Achievements/14.png" id="14">5&nbsp;Dissappearing pads used</td>
+                <td><img src="./Media/Achievements/15.png" id="15">10&nbsp;Dissappearing pads used</td>
+                <!-- <td><img src="./Media/Achievements/16.png" id="16">&lt;NAME&gt;</td> -->
+            </tr>
+        </table>
+        <p id="log"></p>
+        <script>
+            try {
+                var achievements = localStorage.getItem("achievements");
+                if (!achievements) {
+                    achievements = "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]";
+                    localStorage.setItem("achievements",achievements);
+                }
+                achievements = JSON.parse(achievements)
+                for(var i = 0; i < achievements.length; i++) {
+                    document.getElementById(""+(i+1)).style.filter = "brightness(" + (achievements[i] == "1" ? "100" : "25") + "%)"
+                }
+            } catch (error) {
+                document.getElementById("log").innerHTML += error.stack;
+            }
+
+            // Code nuggets to run
+            {
+                
+            }
+        </script>
     </body>
 </html>
