@@ -61,7 +61,7 @@
         <div id="screenColoring" style="background-color:rgba(0,0,0,0)"></div>
         <div id="pauseMenu" style="display:none;position:absolute;left:0px;top:0px;width:100vw;height:100vh;background-color:rgba(0, 0, 0, 0.5);">
             <p onclick="paused=false; document.getElementById('pauseMenu').style.display = 'none'" class="button" style="top:calc(50vh - 140px)">Resume</p>
-            <p onclick="onDeath(); window.location.assign('./main.html')" class="button" style="top:calc(50vh - 20px)">Quit</p>
+            <p onclick="onDeath(); window.location.assign('./main.html'); document.loading = true;" class="button" style="top:calc(50vh - 20px)">Quit</p>
         </div>
 
         <script src="./js/Coordinates.js"></script>
