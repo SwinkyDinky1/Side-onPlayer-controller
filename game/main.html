@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Side-on player-controller</title>
+        <title>Side-on Player-controller</title>
         <style>
             h1 {
                 font-size: 75px;
@@ -12,9 +12,9 @@
             .button {
                 font-size: 50px;
                 position: absolute;
-                width: 250px;
+                width: 290px;
                 height: 65px;
-                left: calc(50vw - 130px);
+                left: calc(50vw - 150px);
             }
             .title {
                 cursor: default;
@@ -28,15 +28,19 @@
             #button3 {
                 top: 520px;
             }
+            #button4 {
+                top: 620px;
+            }
         </style>
         <link rel="stylesheet" href="styles.css">
     </head>
-    <body>
+    <body onload="document.notLoading == true;">
         <br><br>
         <h1 class="title">Side-on<br>Player-controller</h1>
         <br><br>
-        <p class="button" id="button1" onclick="window.location.assign('./game.html')">Play</p>
-        <p class="button" id="button2" onclick="window.location.assign('./upgrades.html')">Upgrades</p>
-        <p class="button" id="button3" onclick="window.location.assign('./settings.html')">Settings</p>
+        <p class="button" id="button1" onclick="window.location.assign('./game.html'); document.loading = true;">Play</p>
+        <p class="button" id="button2" onclick="window.location.assign('./upgrades.html'); document.loading = true;">Upgrades</p>
+        <p class="button" id="button3" onclick="window.location.assign('./settings.html'); document.loading = true;">Settings</p>
+        <p class="button" id="button4" onclick="window.location.assign('./achv.html'); document.loading = true;">Achievements</p>
     </body>
 </html>
