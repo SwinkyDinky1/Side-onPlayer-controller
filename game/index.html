@@ -32,9 +32,6 @@
                         var x = document.getElementById("iframe");
                         var y = (x.contentWindow || x.contentDocument);
                         if (y.document)y = y.document;
-                        y.body.style.backgroundColor = "red";
-                        document.getElementById("log").innerHTML = "?"
-                        document.getElementById("log").innerHTML = y.notLoading
                         if(y.loading === true) {
                             loading = true;
                             document.getElementById("log").innerHTML = "Loading..."
