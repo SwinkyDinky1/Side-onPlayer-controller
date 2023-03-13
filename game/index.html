@@ -2,18 +2,57 @@
 <html>
     <head>
         <title id="title">Side-on Player-controller</title>
-        <style> body { background-color: black; } </style>
+        <style> 
+        body { 
+            background-color: black;
+            color: white; 
+        } 
+        p#log { 
+            position:absolute;
+            top:0px;
+            left:15px;
+            z-index:2;
+        }
+        iframe#iframe {
+            z-index: 0;
+        }
+        </style>
         <script>
+            var loading = false;
             try {
                 setTimeout(function() {
-                document.title = document.getElementById("iframe").contentDocument.title}, 500);
+                    try {
+                        document.title = document.getElementById("iframe").contentWindow.document.title
+                    } catch (error) {
+                        document.getElementById("log").innerHTML = error.stack;
+                    }
+                }, 2000);
+                setInterval(function() {
+                    try {
+                        var x = document.getElementById("iframe");
+                        var y = (x.contentWindow || x.contentDocument);
+                        if (y.document)y = y.document;
+                        y.body.style.backgroundColor = "red";
+                        document.getElementById("log").innerHTML = "?"
+                        document.getElementById("log").innerHTML = contentWindow.document.notLoading
+                        if(document.getElementById("iframe").contentWindow.document.loading === true) {
+                            loading = true;
+                            document.getElementById("log").innerHTML = "Loading..."
+                        } else if(document.getElementById("iframe").contentWindow.document.notLoading === true) {
+                            loading = false;
+                            document.getElementById("log").innerHTML = ""
+                        }
+                    } catch (error) {
+                        document.getElementById("log").innerHTML = error.stack;
+                    }
+                }, 1000)
             } catch (error) {
-                document.getElementById(log).innerHTML = error
+                document.getElementById("log").innerHTML = error.stack;
             }
         </script>
     </head>
     <body>
         <iframe src="./main.html" id="iframe" frameborder="0" style="position:absolute;left:0px;top:0px;width:100vw;height:100vh"></iframe>
-        <p id="log"></p>
+        <p id="log">Loading...</p>
     </body>
 </html>
