@@ -28,8 +28,8 @@
             }
         </style>
     </head>
-    <body>
-        <p onclick="window.location.assign('./main.html')" class="button">&lt; Back</p>
+    <body onload="document.notLoading = true;">
+        <p onclick="window.location.assign('./main.html'); document.loading = true;" class="button">&lt; Back</p>
         <div id="div"></div>
         <p id="log"></p>
         <script>
