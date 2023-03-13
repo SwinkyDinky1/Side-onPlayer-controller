@@ -35,14 +35,7 @@ var doubleXP = false;
 var paused = false;
 var searchParams = new URLSearchParams(new URL(window.location.href).search)
 var currentLocation = searchParams.get("location")
-var debug = searchParams.get("debug")
-try {
-    var presetPlatforms = debug;
-    var platforms = debug ? levels[0].platforms : []
-    var height = debug ? levels[0].height : 0
-} catch (error) {
-    log(error)
-}
+var platforms = []
 
 var frozen = (currentLocation == "frozen" ? 0 : -1)
 var frozenClickCounter = 3
@@ -54,7 +47,23 @@ var backgroundColors = [
     "black",
     "rgb(0,0,25)"
 ]
+var dpUsed = Number(localStorage.getItem("dpUsed"))
+dpUsed = dpUsed ? dpUsed : 0
+var rpUsed = Number(localStorage.getItem("rpUsed"))
+rpUsed = rpUsed ? rpUsed : 0
+localStorage.setItem("dpUsed", dpUsed)
+localStorage.setItem("rpUsed", rpUsed)
+
 var mobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+
+var achievements = localStorage.getItem("achievements")
+if (!achievements) {
+    achievements = "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]"
+    localStorage.setItem("achievements", achievements)
+}
+achievements = JSON.parse(achievements)
+var recentAchievement = "";
+var rATimeout;
 
 function onStart() {
     if(!localStorage.getItem("settings")) {
@@ -73,7 +82,7 @@ function onStart() {
     document.body.style.backgroundColor = backgroundColors[biomes.indexOf(searchParams.get("location"))]
     try {
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-        if(!presetPlatforms) {
+        //if(!presetPlatforms) {
             platforms = [
                 [new Line(0, 0, 100, 100), false, false, 0]
             ]
@@ -87,7 +96,7 @@ function onStart() {
                 platforms.push([new Line(x, y, x + l, y), r, b, (b ? 1 : 0)])
             }
             platforms.shift();
-        }
+        //}
 
         document.addEventListener("keydown", function(event) {
             changeInput(event.code, 1);
@@ -138,8 +147,9 @@ function gameLoop() {
 }
 
 function runInput() {
-    deltaTime = (new Date().getTime() - lastFrameTimeStamp) / 1000
-    lastFrameTimeStamp = new Date().getTime()
+	var currentTime = new Date().getTime()
+    deltaTime = (currentTime - lastFrameTimeStamp) / 1000
+    lastFrameTimeStamp = currentTime
     if(!paused && frozen < 1)
     {
         if (buttonsHeld[0]) {
@@ -179,7 +189,7 @@ function physics() {
         }
         try {
             if (!stopPhysics) {
-                // Wraparound, floor collision detection, & gravity
+                // Wraparound, gravity, collisions, and point gain
                 {
                     if(currentPos.x > windowWidth) {
                         // log("currentPos.x > windowWidth - size")
@@ -200,19 +210,19 @@ function physics() {
                         onDeath()
                         setTimeout(() => {
                             screenPos = 0;
-                            platforms = debug ? levels[0].platforms : [[new Line(0, 0, 100, 0), 0]]
-                            if(!presetPlatforms){
-                                for(i = 0; i < platformAmount; i++) {
-                                    var x = generateRandomNumber(0, windowWidth - 160)
-                                    var y = generateRandomNumber(platforms[platforms.length - 1][0].point1.y + 10, platforms[platforms.length - 1][0].point1.y + 90)
-                                    //var z = generateRandomNumber(platforms[platforms.length - 1][0].point1.y + 10, platforms[platforms.length - 1][0].point1.y + 90)
-                                    var l = generateRandomNumber(80, 160)
-                                    var r = generateRandomNumber(0, 100) < stats[1].specs[1]
-                                    var b = generateRandomNumber(0, 100) < 2
-                                    platforms.push([new Line(x, y, x + l, y), r, b, (b ? 1 : 0)])
-                                }
-                                platforms.shift();
+                            platforms = [
+                                [new Line(0, 0, 100, 0), 0]
+                            ]
+                            for(i = 0; i < platformAmount; i++) {
+                                var x = generateRandomNumber(0, windowWidth - 160)
+                                var y = generateRandomNumber(platforms[platforms.length - 1][0].point1.y + 10, platforms[platforms.length - 1][0].point1.y + 90)
+                                //var z = generateRandomNumber(platforms[platforms.length - 1][0].point1.y + 10, platforms[platforms.length - 1][0].point1.y + 90)
+                                var l = generateRandomNumber(80, 160)
+                                var r = generateRandomNumber(0, 100) < stats[1].specs[1]
+                                var b = generateRandomNumber(0, 100) < 2
+                                platforms.push([new Line(x, y, x + l, y), r, b, (b ? 1 : 0)])
                             }
+                            platforms.shift();
                             currentPos = new Coordinate(0, 80);
                             stopPhysics = false;
                         }, 500)
@@ -220,24 +230,74 @@ function physics() {
                         for(i = 0; i < platforms.length; i++) {
                             platforms[i] = [new Line(platforms[i][0].point1.x, platforms[i][0].point1.y - (currentPos.y - windowHeight / 2 - size.y/2), platforms[i][0].point2.x, platforms[i][0].point2.y - (currentPos.y - windowHeight / 2 - size.y/2)), platforms[i][1], platforms[i][2], platforms[i][3]]
                             if(platforms[i][0].point1.y <= -100) {
-                                if(presetPlatforms) {
-                                    platforms[i][0].point1.y += height
-                                    platforms[i][0].point2.y += height
-                                } else {
-                                    platforms.splice(i, 1)
-                                    var x = generateRandomNumber(0, windowWidth - 160)
-                                    var y = generateRandomNumber(platforms[platforms.length - 1][0].point1.y + 10, platforms[platforms.length - 1][0].point1.y + 90)
-                                    //var z = generateRandomNumber(platforms[platforms.length - 1][0].point1.y + 10, platforms[platforms.length - 1][0].point1.y + 90)
-                                    var l = generateRandomNumber(80, 160)
-                                    var r = generateRandomNumber(0, 100) < stats[1].specs[1]
-                                    var b = generateRandomNumber(0, 100) < 2
-                                    platforms.push([new Line(x, y, x + l, y), r, b, (b ? 1 : 0)])
-                                }
+                                platforms.splice(i, 1)
+                                var x = generateRandomNumber(0, windowWidth - 160)
+                                var y = generateRandomNumber(platforms[platforms.length - 1][0].point1.y + 10, platforms[platforms.length - 1][0].point1.y + 90)
+                                //var z = generateRandomNumber(platforms[platforms.length - 1][0].point1.y + 10, platforms[platforms.length - 1][0].point1.y + 90)
+                                var l = generateRandomNumber(80, 160)
+                                var r = generateRandomNumber(0, 100) < stats[1].specs[1]
+                                var b = generateRandomNumber(0, 100) < 2
+                                platforms.push([new Line(x, y, x + l, y), r, b, (b ? 1 : 0)])
                             }
                         }
                         screenPos += ( doubleXPTimer && doubleXP ? ((currentPos.y - size.y/2) - windowHeight / 2) * 2 : (currentPos.y - size.y/2) - windowHeight / 2 );
                         currentPos = new Coordinate(currentPos.x, windowHeight / 2 + size.y/2)
                         console.log((currentPos.y - size.y/2) - windowHeight / 2)
+                        if(Math.round(screenPos / 100) >= 20 && !achievements[0]) {
+                            achievements[0] = 1
+                            localStorage.setItem("achievements", JSON.stringify(achievements))
+                            textToLog = achievements
+                            recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/01.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> Score 20"
+                            if(rATimeout !== undefined) {
+                                clearTimeout(rATimeout)
+                            }
+                            rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                        } if(Math.round(screenPos / 100) >= 50 && !achievements[1]) {
+                            achievements[1] = 1
+                            localStorage.setItem("achievements", JSON.stringify(achievements))
+                            textToLog = achievements
+                            recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/02.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> Score 50"
+                            if(rATimeout !== undefined) {
+                                clearTimeout(rATimeout)
+                            }
+                            rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                        } if(Math.round(screenPos / 100) >= 100 && !achievements[2]) {
+                            achievements[2] = 1
+                            localStorage.setItem("achievements", JSON.stringify(achievements))
+                            textToLog = achievements
+                            recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/03.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> Score 100"
+                            if(rATimeout !== undefined) {
+                                clearTimeout(rATimeout)
+                            }
+                            rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                        } if(Math.round(screenPos / 100) >= 150 && !achievements[3]) {
+                            achievements[3] = 1
+                            localStorage.setItem("achievements", JSON.stringify(achievements))
+                            textToLog = achievements
+                            recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/04.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> Score 150"
+                            if(rATimeout !== undefined) {
+                                clearTimeout(rATimeout)
+                            }
+                            rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                        } if(Math.round(screenPos / 100) >= 200 && !achievements[4]) {
+                            achievements[4] = 1
+                            localStorage.setItem("achievements", JSON.stringify(achievements))
+                            textToLog = achievements
+                            recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/05.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> Score 200"
+                            if(rATimeout !== undefined) {
+                                clearTimeout(rATimeout)
+                            }
+                            rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                        } if(Math.round(screenPos / 100) >= 500 && !achievements[5]) {
+                            achievements[5] = 1
+                            localStorage.setItem("achievements", JSON.stringify(achievements))
+                            textToLog = achievements
+                            recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/06.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> Score 500"
+                            if(rATimeout !== undefined) {
+                                clearTimeout(rATimeout)
+                            }
+                            rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                        }
                     }
 
                     if(doCollisions) {
@@ -251,11 +311,105 @@ function physics() {
                                 if(typeof shortestDistAndDir.collision != "string" && shortestDistAndDir.collision[1]) {
                                     doCollisions = false;
                                     verticalSpeed = stats[1].specs[0];
+                                    rpUsed++
+                                    localStorage.setItem("rpUsed", rpUsed)
+                                    if(!achievements[6]) {
+                                        achievements[6] = 1
+                                        localStorage.setItem("achievements", JSON.stringify(achievements))
+                                        textToLog = achievements
+                                        recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/07.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> 1 Rocket used"
+                                        if(rATimeout !== undefined) {
+                                            clearTimeout(rATimeout)
+                                        }
+                                        rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                                    }
+                                    if(rpUsed >= 5 && !achievements[7]) {
+                                        achievements[7] = 1
+                                        localStorage.setItem("achievements", JSON.stringify(achievements))
+                                        textToLog = achievements
+                                        recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/08.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> 5 Rockets used"
+                                        if(rATimeout !== undefined) {
+                                            clearTimeout(rATimeout)
+                                        }
+                                        rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                                    }
+                                    if(rpUsed >= 10 && !achievements[8]) {
+                                        achievements[8] = 1
+                                        localStorage.setItem("achievements", JSON.stringify(achievements))
+                                        textToLog = achievements
+                                        recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/09.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> 10 Rockets used"
+                                        if(rATimeout !== undefined) {
+                                            clearTimeout(rATimeout)
+                                        }
+                                        rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                                    }
+                                    if(rpUsed >= 20 && !achievements[9]) {
+                                        achievements[9] = 1
+                                        localStorage.setItem("achievements", JSON.stringify(achievements))
+                                        textToLog = achievements
+                                        recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/10.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> 20 Rockets used"
+                                        if(rATimeout !== undefined) {
+                                            clearTimeout(rATimeout)
+                                        }
+                                        rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                                    }
+                                    if(rpUsed >= 50 && !achievements[10]) {
+                                        achievements[10] = 1
+                                        localStorage.setItem("achievements", JSON.stringify(achievements))
+                                        textToLog = achievements
+                                        recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/11.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> 50 Rockets used"
+                                        if(rATimeout !== undefined) {
+                                            clearTimeout(rATimeout)
+                                        }
+                                        rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                                    }
+                                    if(rpUsed >= 100 && !achievements[11]) {
+                                        achievements[11] = 1
+                                        localStorage.setItem("achievements", JSON.stringify(achievements))
+                                        textToLog = achievements
+                                        recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/12.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> 100 Rockets used"
+                                        if(rATimeout !== undefined) {
+                                            clearTimeout(rATimeout)
+                                        }
+                                        rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                                    }
                                 }
                                 if(typeof shortestDistAndDir.collision != "string" && shortestDistAndDir.collision[2]) {
                                     platforms[shortestDistAndDir.index][3] -= deltaTime / 0.5
                                     if(platforms[shortestDistAndDir.index][3] <= 0) {
                                         platforms.splice(shortestDistAndDir.index, 1)
+                                        dpUsed++
+                                        localStorage.setItem("dpUsed", dpUsed)
+                                        if(!achievements[12]) {
+                                            achievements[12] = 1
+                                            localStorage.setItem("achievements", JSON.stringify(achievements))
+                                            textToLog = achievements
+                                            recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/13.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> 1 Dissappearing pad used"
+                                            if(rATimeout !== undefined) {
+                                                clearTimeout(rATimeout)
+                                            }
+                                            rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                                        }
+                                        if(dpUsed >= 5 && !achievements[13]) {
+                                            achievements[13] = 1
+                                            localStorage.setItem("achievements", JSON.stringify(achievements))
+                                            textToLog = achievements
+                                            recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/14.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> 5 Dissappearing pads used"
+                                            if(rATimeout !== undefined) {
+                                                clearTimeout(rATimeout)
+                                            }
+                                            rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                                        }
+                                        if(dpUsed >= 10 && !achievements[14]) {
+                                            achievements[14] = 1
+                                            localStorage.setItem("achievements", JSON.stringify(achievements))
+                                            textToLog = achievements
+                                            recentAchievement += "Achievement get!<br><img src=\"./Media/Achievements/15.png\" style=\"width:1em;height:1em; position:relative; top:2px;\" /> 10 Dissappearing pads used"
+                                            if(rATimeout !== undefined) {
+                                                clearTimeout(rATimeout)
+                                            }
+                                            rATimeout = setTimeout(function(){recentAchievement = ""; rATimeout = undefined}, 10000)
+                                        }
                                     }
                                 }
                             } else if(shortestDistAndDir.dir.y == 1) {
@@ -272,9 +426,10 @@ function physics() {
         catch(error) {
             log(error.stack);
         }
-        textToLog = platforms[0][0].point1.y.toString()
-
+        //textToLog = mobile
+        
         log(`
+            ${recentAchievement ? recentAchievement + "<br><br>" : ""}
             ${settings.showLog ? `<h4>General</h4>
             Current position: (${ Math.round(currentPos.x) + ", " + Math.round(currentPos.y) }) <br>
             Keys down: ${ ( buttonsHeld.toString() != [0, 0, 0].toString() ? ((buttonsHeld[0] ? (buttonsHeld[1] || buttonsHeld[2] ? "Left, " : "Left") : "") + (buttonsHeld[1] ? (buttonsHeld[2] ? "Right, " : "Right") : "") + "" + (buttonsHeld[2] ? "Jump" : "")) : "None" ) } <br>
@@ -286,9 +441,9 @@ function physics() {
             Direction to nearest collision: ${ JSON.stringify(shortestDistAndDir.dir) } <br>
             <h4>Game data</h4>` : ""}
             Score: ${ Math.round(screenPos / 100) } <br>
-            Highscore: ${ Math.round(screenPos / 100) > window.localStorage.getItem("highScore") || window.localStorage.getItem("highScore") == null ? "<span style=\"color:green\">" + Math.round(screenPos / 100) + "</span>" : window.localStorage.getItem("highScore") }<br>
+            Highscore: ${ window.localStorage.getItem("highscore") != '' || null ? (Math.round(screenPos / 100) > window.localStorage.getItem("highScore") ? "<span style=\"color:green\">" + Math.round(screenPos / 100) + "</span>" : window.localStorage.getItem("highScore")) : "<span style=\"color:green\">" + Math.round(screenPos / 100) + "</span>" }<br>
             ${ settings.showLog ? `Height: ${ Math.round(screenPos) }px <br>` : "" } 
-            Usable points: ${ window.localStorage.getItem("points") }
+            Usable points: ${ localStorage.getItem("points") ? localStorage.getItem("points") : 0 }
             ${ settings.showLog ? `<h4>Abilities</h4>
             <h5>Double XP</h5>
             Active:${ doubleXPTimer && doubleXP ? "<span style=\"color:green\">True</span>" : "<span style=\"color:red\">False</span>" }<br>
@@ -297,8 +452,8 @@ function physics() {
             Current biome: ${ currentLocation }<br>
             <h5>Frozen</h5>
             Frozen: ${ frozen }<br>
-            Click counter: ${ frozenClickCounter }` : "" }&zwnj;
-            ${ settings.showLog ? textToLog : "" }
+            Click counter: ${ frozenClickCounter }` : "" }
+            ${ settings.showLog ? "<br>" + textToLog : "" }&zwnj;
         `)
         // Intersecting with bottom? ${ currentPos.y > windowHeight - size ? "<span style=\"color:green\">True</span>" : "<span style=\"color:red\">False</span>" } <br>
         // Intersecting with side? ${ currentPos.x > windowWidth - size ? "<span style=\"color:green\">True</span>" : "<span style=\"color:red\">False</span>" } <br>
@@ -306,12 +461,10 @@ function physics() {
 }
 
 function onDeath() { 
-    if(window.localStorage.getItem("highScore") < Math.round(screenPos / 100) && !presetPlatforms) {
-        window.localStorage.setItem("highScore", Math.round(screenPos / 100))
+    if(localStorage.getItem("highScore") < Math.round(screenPos / 100)) {
+        localStorage.setItem("highScore", Math.round(screenPos / 100))
     }
-    if(!presetPlatforms) {
-        window.localStorage.setItem("points", (Number(window.localStorage.getItem("points")) ? Number(window.localStorage.getItem("points")) + Math.round(screenPos / 100) : Math.round(screenPos / 100)))
-    }
+    localStorage.setItem("points", (Number(localStorage.getItem("points")) ? Number(localStorage.getItem("points")) + Math.round(screenPos / 100) : Math.round(screenPos / 100)))
     stopPhysics = true;
     doubleXPCooldown = 0; doubleXPTimer = 0; doubleXP = false;
 }
